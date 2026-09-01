@@ -1,0 +1,101 @@
+Table Cliente {
+  idCliente int [pk, increment]
+  nome varchar
+  cpf varchar [unique]
+  telefone varchar
+  endereco varchar
+}
+
+Table Veiculo {
+  idVeiculo int [pk, increment]
+  placa varchar [unique]
+  modelo varchar
+  marca varchar
+  ano int
+
+  idCliente int
+}
+
+Table Equipe {
+  idEquipe int [pk, increment]
+  nomeEquipe varchar
+}
+
+Table Mecanico {
+  idMecanico int [pk, increment]
+  nome varchar
+  endereco varchar
+  especialidade varchar
+}
+
+Table EquipeMecanico {
+  idEquipe int
+  idMecanico int
+
+  indexes {
+    (idEquipe, idMecanico) [pk]
+  }
+}
+
+Table OrdemServico {
+  idOS int [pk, increment]
+  numeroOS int [unique]
+  dataEmissao date
+  dataConclusao date
+  valorTotal decimal
+  status varchar
+  autorizado boolean
+
+  idVeiculo int
+  idEquipe int
+}
+
+Table Servico {
+  idServico int [pk, increment]
+  descricao varchar
+  valorMaoDeObra decimal
+}
+
+Table OrdemServicoServico {
+  idOS int
+  idServico int
+  quantidade int
+  valorServico decimal
+
+  indexes {
+    (idOS, idServico) [pk]
+  }
+}
+
+Table Peca {
+  idPeca int [pk, increment]
+  nome varchar
+  descricao varchar
+  valorUnitario decimal
+}
+
+Table OrdemServicoPeca {
+  idOS int
+  idPeca int
+  quantidade int
+  valorUnitario decimal
+
+  indexes {
+    (idOS, idPeca) [pk]
+  }
+}
+
+Ref: Cliente.idCliente < Veiculo.idCliente
+
+Ref: Veiculo.idVeiculo < OrdemServico.idVeiculo
+
+Ref: Equipe.idEquipe < OrdemServico.idEquipe
+
+Ref: Equipe.idEquipe < EquipeMecanico.idEquipe
+Ref: Mecanico.idMecanico < EquipeMecanico.idMecanico
+
+Ref: OrdemServico.idOS < OrdemServicoServico.idOS
+Ref: Servico.idServico < OrdemServicoServico.idServico
+
+Ref: OrdemServico.idOS < OrdemServicoPeca.idOS
+Ref: Peca.idPeca < OrdemServicoPeca.idPeca
